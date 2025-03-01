@@ -1,0 +1,22 @@
+mkdir -p app/models app/database app/routes
+touch app/__init__.py app/main.py app/config.py app/models/__init__.py app/models/schemas.py app/database/__init__.py app/database/mongodb.py app/routes/__init__.py app/routes/weaknesses.py app/routes/virtues.py app/routes/questions.py requirements.txt .env
+
+virtues-api/
+├── app/
+│   ├── __init__.py
+│   ├── main.py
+│   ├── config.py
+│   ├── models/
+│   │   ├── __init__.py
+│   │   └── schemas.py
+│   ├── database/
+│   │   ├── __init__.py
+│   │   └── mongodb.py
+│   └── routes/
+│       ├── __init__.py
+│       ├── weaknesses.py
+│       ├── virtues.py
+│       └── questions.py
+├── requirements.txt
+└── .env
+
