@@ -1,2 +1,4 @@
 .env
 __pycache__
+context_files
+notes.txt
