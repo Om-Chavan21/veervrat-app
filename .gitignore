@@ -2,3 +2,5 @@
 __pycache__
 context_files
 notes.txt
+venv
+node_modules

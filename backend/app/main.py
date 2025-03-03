@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routes import main_virtues, sub_virtues, weaknesses, questions
+from app.routes import main_virtues, sub_virtues, weaknesses, questions, dals, users
 
 app = FastAPI(title="Virtues and Weaknesses Mapping API", version="1.0.0")
 
@@ -19,6 +19,8 @@ app.include_router(main_virtues.router, prefix="/api", tags=["Main Virtues"])
 app.include_router(sub_virtues.router, prefix="/api", tags=["Sub Virtues"])
 app.include_router(weaknesses.router, prefix="/api", tags=["Weaknesses"])
 app.include_router(questions.router, prefix="/api", tags=["Questions"])
+app.include_router(dals.router, prefix="/api", tags=["Dals"])
+app.include_router(users.router, prefix="/api", tags=["Users"])
 
 
 @app.get("/", tags=["Root"])

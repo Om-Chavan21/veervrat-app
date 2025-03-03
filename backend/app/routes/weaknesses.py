@@ -2,14 +2,38 @@ from fastapi import APIRouter, HTTPException, status, Query
 from bson.objectid import ObjectId
 from typing import List, Optional
 
-from app.models.schemas import WeaknessCreate  # Updated import
-from app.database.mongodb import weaknesses, subvirtues
+from app.models.schemas import WeaknessCreate
+from app.database.mongodb import weaknesses, subvirtues, main_virtues, questions
 
 router = APIRouter()
 
 
+@router.delete("/weaknesses/super-delete")
+async def super_delete_weaknesses():
+    try:
+        await weaknesses.delete_many({})
+        return {"status": "all deleted"}
+    except:
+        raise HTTPException(status_code=400, detail="Failed to delete")
+
+
 @router.post("/weaknesses/")
 async def create_weakness(weakness: WeaknessCreate):
+    # Validate item_code format for weaknesses
+    if not weakness.item_code.startswith("W") or not weakness.item_code[1:].isdigit():
+        raise HTTPException(
+            status_code=400, detail="Invalid item code format for weaknesses"
+        )
+
+    # Check if item_code already exists in any collection
+    if (
+        await main_virtues.find_one({"item_code": weakness.item_code})
+        or await weaknesses.find_one({"item_code": weakness.item_code})
+        or await subvirtues.find_one({"item_code": weakness.item_code})
+        or await questions.find_one({"item_code": weakness.item_code})
+    ):
+        raise HTTPException(status_code=400, detail="Item code already exists")
+
     try:
         # Validate subvirtue IDs
         for sv_id in weakness.suggested_subvirtue_ids:
@@ -92,6 +116,29 @@ async def get_weakness(weakness_id: str):
 @router.put("/weaknesses/{weakness_id}")
 async def update_weakness(weakness_id: str, weakness_data: WeaknessCreate):
     try:
+        # Check if item_code already exists for another document in any collection
+        if (
+            await main_virtues.find_one({"item_code": weakness_data.item_code})
+            or await weaknesses.find_one(
+                {
+                    "item_code": weakness_data.item_code,
+                    "_id": {"$ne": ObjectId(weakness_id)},
+                }
+            )
+            or await subvirtues.find_one({"item_code": weakness_data.item_code})
+            or await questions.find_one({"item_code": weakness_data.item_code})
+        ):
+            raise HTTPException(status_code=400, detail="Item code already exists")
+
+        # Validate item_code format for weaknesses
+        if (
+            not weakness_data.item_code.startswith("W")
+            or not weakness_data.item_code[1:].isdigit()
+        ):
+            raise HTTPException(
+                status_code=400, detail="Invalid item code format for weaknesses"
+            )
+
         # Validate subvirtue IDs
         for sv_id in weakness_data.suggested_subvirtue_ids:
             try:

@@ -9,3 +9,5 @@ weaknesses = db.weaknesses
 main_virtues = db.main_virtues
 subvirtues = db.subvirtues
 questions = db.questions
+dals = db.dals
+users = db.users
