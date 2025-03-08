@@ -11,3 +11,4 @@ subvirtues = db.subvirtues
 questions = db.questions
 dals = db.dals
 users = db.users
+questionnaires = db.questionnaires

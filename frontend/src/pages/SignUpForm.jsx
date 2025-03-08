@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useNavigate } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import {
@@ -132,6 +132,8 @@ function SignUpForm() {
         }
     };
 
+    const navigate = useNavigate();
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setFormSubmitted(true);
@@ -147,10 +149,12 @@ function SignUpForm() {
                 email: email,
                 password: password,
             };
-            console.log(user);
+            
             await axios.post(`${import.meta.env.VITE_API_URL}/users/`, user);
-            toast.success("User created successfully!");
-            // Clear form fields if needed
+            toast.success("User created successfully! Please log in.");
+            navigate('/login');
+            
+            // Clear form fields
             setNameEn("");
             setNameMr("");
             setDescriptionEn("");
@@ -163,15 +167,9 @@ function SignUpForm() {
         } catch (error) {
             console.error(error);
             if (error.response && error.response.status === 400) {
-                if (
-                    error.response.data.detail.includes("Email already exists")
-                ) {
+                if (error.response.data.detail.includes("Email already exists")) {
                     toast.error("Email already exists");
-                } else if (
-                    error.response.data.detail.includes(
-                        "User with this Phone Number already exists"
-                    )
-                ) {
+                } else if (error.response.data.detail.includes("User with this Phone Number already exists")) {
                     toast.error("User with this phone number already exists");
                 } else {
                     toast.error("Failed to create user. Please try again.");
